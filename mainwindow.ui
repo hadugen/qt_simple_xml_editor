@@ -40,6 +40,7 @@
     <addaction name="action_openFile"/>
     <addaction name="action_savefile"/>
     <addaction name="action_saveAs"/>
+    <addaction name="action_pdfExport"/>
    </widget>
    <addaction name="menu"/>
   </widget>
@@ -68,6 +69,14 @@
    </property>
    <property name="text">
     <string>Сохранить как</string>
+   </property>
+  </action>
+  <action name="action_pdfExport">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Экспорт в pdf</string>
    </property>
   </action>
  </widget>

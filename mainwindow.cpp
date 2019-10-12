@@ -19,8 +19,9 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_action_openFile_triggered() {
-    _fileUrl = QFileDialog::getOpenFileUrl(this, "Открыть файл", QUrl(), FILE_FILTER);
-    if(!_fileUrl.isValid()) return;
+    QUrl fileUrl = QFileDialog::getOpenFileUrl(this, "Открыть файл", QUrl(), XML_FILE_FILTER);
+    if(!fileUrl.isValid()) return;
+    _fileUrl = fileUrl;
     QFile file(_fileUrl.toLocalFile());
     if(!file.open(QIODevice::ReadOnly)) {
         QMessageBox::critical(this, "Ошибка открытия файла", "Не удалось открыть файл:\n" + file.errorString());
@@ -38,6 +39,7 @@ void MainWindow::on_action_openFile_triggered() {
     ui->treeView->expandAll();
     ui->action_saveAs->setEnabled(true);
     ui->action_savefile->setEnabled(true);
+    ui->action_pdfExport->setEnabled(true);
 }
 
 void MainWindow::on_action_savefile_triggered() {
@@ -55,7 +57,7 @@ void MainWindow::on_action_savefile_triggered() {
 }
 
 void MainWindow::on_action_saveAs_triggered() {
-    QString path = QFileDialog::getSaveFileName(this, "Сохранить как", "untitled.xml", FILE_FILTER);
+    QString path = QFileDialog::getSaveFileName(this, "Сохранить как", "untitled.xml", XML_FILE_FILTER);
     if(path.isEmpty()) return;
 
     auto model = static_cast<XmlTreeModel*>(ui->treeView->model());
@@ -100,4 +102,32 @@ void MainWindow::setupTreeView() {
         });
         menu->popup(ui->treeView->mapToGlobal(pos));
     });
+}
+
+void MainWindow::on_action_pdfExport_triggered() {
+    on_action_savefile_triggered();
+    std::fstream in(_fileUrl.fileName().toStdString(), std::ios::in);
+    PDF pdf;
+    pdf.setFont(PDF::COURIER, 10);
+    const int interval = 10;
+    const int maxPageSize = 750;
+    const int bottomPadding = 40;
+
+    int strNum = 0;
+    while(!in.eof()) {
+        string s;
+        std::getline(in, s);
+        auto split = pdf.wrapText(s, 500, false);
+        for(int i = 0; i < split.size(); i++) {
+            pdf.showTextXY(split[i], 50, maxPageSize - interval * strNum);
+            strNum++;
+            if(strNum > (maxPageSize - bottomPadding) / interval) {
+                strNum = 0;
+                pdf.newPage();
+            }
+        }
+    }
+    std::string err;
+    QString path = QFileDialog::getOpenFileName(this, "Экспорт как pdf", "export.pdf", PDF_FILE_FILTER);
+    pdf.writeToFile(path.toStdString(), err);
 }

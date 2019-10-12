@@ -1,7 +1,7 @@
 #include "xmlitem.h"
 #include <QDebug>
 XmlItem::XmlItem(const QDomNode &node) {
-    this->node = node;
+    this->_node = node;
 }
 
 XmlItem::~XmlItem() {
@@ -19,18 +19,18 @@ void XmlItem::prependChild(XmlItem *child) {
 }
 
 bool XmlItem::isElement() {
-    return node.isElement();
+    return _node.isElement();
 }
 
 void XmlItem::addElement(QDomNode node) {
     XmlItem *item = new XmlItem(node);
-    this->node.appendChild(node);
+    this->_node.appendChild(node);
     appendChild(item);
 }
 
 void XmlItem::addAttribute(QDomAttr attr) {
     XmlItem *item = new XmlItem(attr);
-    this->node.toElement().setAttributeNode(attr);
+    this->_node.toElement().setAttributeNode(attr);
     prependChild(item);
 }
 
@@ -38,11 +38,11 @@ bool XmlItem::removeChilds(int row, int amount) {
     if(row < 0 || row > _childItems.size()) return false;
     if(amount < 0 || amount > _childItems.size()) return false;
     for(int i = row; i < row + amount; i++) {
-        if(_childItems[i]->node.isAttr()) {
-            auto attr = _childItems[i]->node.toAttr();
-            node.toElement().removeAttributeNode(attr);
+        if(_childItems[i]->_node.isAttr()) {
+            auto attr = _childItems[i]->_node.toAttr();
+            _node.toElement().removeAttributeNode(attr);
         } else {
-            node.removeChild(_childItems[i]->node);
+            _node.removeChild(_childItems[i]->_node);
         }
         delete _childItems[i];
     }
@@ -65,8 +65,8 @@ int XmlItem::columnCount() const {
 
 QVariant XmlItem::data(int column) const {
     switch (column) {
-    case 0: return node.nodeName();
-    case 1: return node.nodeValue();
+    case 0: return _node.nodeName();
+    case 1: return _node.nodeValue();
     default: return "NULL";
     }
 }
@@ -89,23 +89,21 @@ void XmlItem::setParentItem(XmlItem *parent) {
 bool XmlItem::setData(int column, QString value) {
     if(column == 0) {
         if(value[0].isDigit() || value.indexOf(' ') != 0) return false;
-        if(node.isElement()) {
-            node.toElement().setTagName(value);
-        } else if(node.isAttr()) {
-            auto parent = node.toAttr().ownerElement();
+        if(_node.isElement()) {
+            _node.toElement().setTagName(value);
+        } else if(_node.isAttr()) {
+            auto parent = _node.toAttr().ownerElement();
             if(parent.hasAttribute(value)) return false;
-            auto doc = node.ownerDocument();
+            auto doc = _node.ownerDocument();
             auto newAttr = doc.createAttribute(value);
-            newAttr.setValue(node.toAttr().value());
-            parent.removeAttributeNode(node.toAttr());
+            newAttr.setValue(_node.toAttr().value());
+            parent.removeAttributeNode(_node.toAttr());
             parent.setAttributeNode(newAttr);
-            node = newAttr;
-            /*parent.removeAttributeNode(node.toAttr());
-            _parentItem->addAttribute(newAttr);*/
+            _node = newAttr;
         }
     } else if(column == 1) {
-        if(!node.isElement()) {
-            node.setNodeValue(value);
+        if(!_node.isElement()) {
+            _node.setNodeValue(value);
         }
     }
     return true;

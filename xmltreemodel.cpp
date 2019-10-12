@@ -5,6 +5,7 @@ XmlTreeModel::XmlTreeModel(const QDomDocument& doc, QObject *parent)
     _root = new XmlItem(doc);
     _doc = doc;
     showTree(doc.lastChild(), _root);
+
 }
 
 void XmlTreeModel::showTree(QDomNode root, XmlItem *rootItem) {

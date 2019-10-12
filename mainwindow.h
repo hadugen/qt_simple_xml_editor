@@ -4,12 +4,16 @@
 #include <QMainWindow>
 #include <xmlitem.h>
 #include <xmltreemodel.h>
+#include <pdf.h>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QUrl>
+#include <fstream>
+#include <string>
 
 #define WINDOW_TITLE "Xml редактор"
-#define FILE_FILTER  "Xml files(*.xml)"
+#define XML_FILE_FILTER  "xml files(*.xml)"
+#define PDF_FILE_FILTER "pdf files(*.pdf)"
 
 namespace Ui {
 class MainWindow;
@@ -29,6 +33,8 @@ private slots:
     void on_action_savefile_triggered();
 
     void on_action_saveAs_triggered();
+
+    void on_action_pdfExport_triggered();
 
 private:
     Ui::MainWindow *ui;

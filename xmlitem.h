@@ -7,7 +7,7 @@
 class XmlItem
 {
 public:
-    XmlItem(const QDomNode &node);
+    XmlItem(const QDomNode &_node);
     ~XmlItem();
     void appendChild(XmlItem *child);
 
@@ -30,7 +30,7 @@ private:
     QVector<XmlItem*> _childItems;
     QVector<QVariant> _itemData;
     XmlItem *_parentItem = nullptr;
-    QDomNode node;
+    QDomNode _node;
 };
 
 #endif // XMLITEM_H
