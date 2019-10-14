@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     setupTreeView();
+    ui;
 }
 
 MainWindow::~MainWindow() {
