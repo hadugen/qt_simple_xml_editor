@@ -24,20 +24,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 CONFIG += c++17
 
-INCLUDEPATH += pdf_convertations
+INCLUDEPATH += pdf_convertations \
+        xml_model
 
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-        xmlitem.cpp \
-        xmltreemodel.cpp \
+        xml_model\xmlitem.cpp \
+        xml_model\xmltreemodel.cpp \
         pdf_convertations\pdf.cpp \
         pdf_convertations\metrics.cpp
 
 HEADERS += \
         mainwindow.h \
-        xmlitem.h \
-        xmltreemodel.h \
+        xml_model\xmlitem.h \
+        xml_model\xmltreemodel.h \
         pdf_convertations\pdf.h \
         pdf_convertations\metrics.h
 
