@@ -88,7 +88,7 @@ void XmlItem::setParentItem(XmlItem *parent) {
 
 bool XmlItem::setData(int column, QString value) {
     if(column == 0) {
-        if(value[0].isDigit() || value.indexOf(' ') != 0) return false;
+        if(value[0].isDigit() || value.indexOf(' ') != -1) return false;
         if(_node.isElement()) {
             _node.toElement().setTagName(value);
         } else if(_node.isAttr()) {
