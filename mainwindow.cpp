@@ -128,6 +128,13 @@ void MainWindow::on_action_pdfExport_triggered() {
         }
     }
     std::string err;
-    QString path = QFileDialog::getOpenFileName(this, "Экспорт как pdf", "export.pdf", PDF_FILE_FILTER);
-    pdf.writeToFile(path.toStdString(), err);
+    QString path = QFileDialog::getSaveFileName(this, "Экспорт как pdf", "export.pdf", PDF_FILE_FILTER);
+    if(path.isEmpty()) return;
+    QFile file(path);
+    if(!file.open(QIODevice::WriteOnly)) {
+        QMessageBox::critical(this, "Ошибка открытия файла", "Не удалось открыть файл: " + file.errorString());
+        return;
+    }
+    auto pdf_str = pdf.toString();
+    file.write(pdf_str.c_str(), pdf_str.size());
 }

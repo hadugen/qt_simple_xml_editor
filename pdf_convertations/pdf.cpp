@@ -482,8 +482,7 @@ string PDF::toString()
 
 bool PDF::writeToFile(const string &fileName, string &errMsg)
 {
-   ofstream theFile(fileName.c_str(), ios::out | ios::binary);
-
+   ofstream theFile(fileName, ios::out | ios::binary);
    if(!theFile)
    {
       errMsg = "Could not open file: [" + fileName + "]";
